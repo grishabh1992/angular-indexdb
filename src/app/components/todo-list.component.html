@@ -1,0 +1,57 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="main-page">
+    <div class="page-title">
+        <h2>
+            Welcome to Notes Sample(IndexDB example)
+        </h2>
+    </div>
+    <div class="actions" *ngIf="!notes.formType">
+        <span>
+            <button type="button" (click)="notes.formType='add'">Add Note</button>
+        </span>
+    </div>
+    <div class="note-form-con" *ngIf="(notes.formType=='add') || (notes.formType=='edit')">
+        <div class="title">
+            <h4 *ngIf="notes.formType=='add'">Create Note</h4>
+            <h4 *ngIf="notes.formType=='edit'">Edit Note</h4>
+        </div>
+        <div class="form">
+            <div class="field-con">
+                <label>Title</label>
+                <input type="text" [(ngModel)]="notes.instance.title" />
+            </div>
+            <div class="field-con">
+                <label>Description</label>
+                <textarea rows="4" cols="50" [(ngModel)]="notes.instance.description"></textarea>
+            </div>
+            <div class="field-con button-con">
+                <button type="button" *ngIf="notes.formType=='add'" (click)="createUser()">Add</button>
+                <button type="button" *ngIf="notes.formType=='edit'" (click)="updateNote()">Update</button>
+                <button type="button" (click)="resetNote();notes.formType=''">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="list-notes">
+        <h2>My Notes</h2>
+        <div class="note" *ngFor="let note of notes.list">
+            <div class="header-cont">
+                <div class="title">{{note.title}}</div>
+                <div class="actions">
+                    <span class="icons" (click)="editNote(note)">
+                        <a href="javascript:void(0);">
+                            <img width="16" src="../assets/images/edit.png" />
+                        </a>
+                    </span>
+                    <span class="icons" (click)="deleteNote(note)">
+                        <a href="javascript:void(0);">
+                            <img width="16" src="../assets/images/delete.png" />
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <div class="desc">{{note.description}}</div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+.main-page {
+    color : #151111;
+    font-size:16px;
+    padding: 16px 32px;
+    .actions {
+        text-align: right;
+    }
+    .page-title {
+        text-align:center
+    }
+    .note-form-con {
+        background-color: aliceblue;
+        border-bottom : 1px dashed;
+        border-top : 1px dashed;
+        padding: 8px 32px;
+        .title {
+            text-align: center;
+            font-weight: 500;
+            font-size: 20px;
+        }
+    }
+    .list-notes {
+        .note {
+            border-top : 1px dashed;            
+            background-color: aliceblue;
+            padding: 12px;
+            &:last-child {
+                border-bottom : 1px dashed;
+            }
+            .header-cont {
+                .title, .actions {
+                    display: inline-block;
+                    padding: 8px 0px;
+                    font-weight: 500;
+                }
+                .title {
+                    font-size: 20px;
+                }
+                .actions {
+                    float:right;
+                    clear: both;
+                    .icons{
+                        padding: 8px;
+                    }
+                }
+                clear: both;
+            }
+            .desc {
+                padding: 8px;
+            }
+            clear: both;
+        }
+    }
+
+    .form {
+        .field-con {
+            margin: 16px 0px;
+            vertical-align: middle;
+            label{
+                display: inline-block;
+                width: 25%;                
+            }
+            input {
+                margin-right:16px;
+                display: inline-block;
+                width: 50%;  
+                height: 32px;
+            }
+            textarea {
+                margin-right:16px;
+                display: inline-block;
+                width: 50%; 
+                height: 80px; 
+            }
+            
+        }
+        .button-con {
+            text-align: right;
+            button {
+                margin : 8px;
+            }
+        }
+    }
+}
