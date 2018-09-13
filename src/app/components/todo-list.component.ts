@@ -38,12 +38,6 @@ export class TodoListComponent implements OnInit {
                             options: { unique: false }
                         }
                     ]
-                },
-                {
-                    name: 'userList',
-                    options: {
-                        keyPath: 'username'
-                    }
                 }
             ]
         }

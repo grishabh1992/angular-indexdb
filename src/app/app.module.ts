@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { ComplexOperationComponent } from './components/complex-opration.component';
 import { TodoListComponent } from './components/todo-list.component';
+import { HttpModule } from '@angular/http';
 const routes: Routes = [
   { path: '', component: TodoListComponent },
   { path: 'complex', component: ComplexOperationComponent },
@@ -17,7 +18,8 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    HttpModule
   ],
   providers: [IndexDbServiceService
   ],

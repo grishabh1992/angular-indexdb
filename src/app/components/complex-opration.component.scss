@@ -1,0 +1,47 @@
+.main-page {
+    color : #151111;
+    font-size:16px;
+    padding: 16px 32px;
+    .actions {
+        text-align: right;
+    }
+    .page-title {
+        text-align:center
+    }
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    .pagination {
+        display: inline-block;
+        a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+            &.active {
+                background-color: #ddd;
+                color: white;
+            }
+            &:hover {
+                background-color: #ddd;
+            }
+        }
+    }
+        
+    
+    // .pagination a:hover:not(.active) {background-color: #ddd;}
+}
