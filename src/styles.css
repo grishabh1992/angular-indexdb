@@ -13,3 +13,6 @@ body {
     margin : 0px;
     font-family: arial, sans-serif;
 }
+input, select {
+    height:24px;
+}

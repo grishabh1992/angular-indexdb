@@ -109,7 +109,7 @@ export class TodoListComponent implements OnInit {
 
     getList() {
         this.indexDbServiceService.getAllRecords(this.dbInstance, 'todoList', 1, (result, error) => {
-            this.notes.list = result;
+            this.notes.list = result.data;
         });
     }
 

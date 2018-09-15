@@ -6,7 +6,18 @@
         text-align: right;
     }
     .page-title {
-        text-align:center
+        text-align:center;
+        
+    }
+    .area {
+        padding : 8px 4px;
+        margin : 8px 4px;
+        .area-on {
+            display: inline-block;            
+            .com{
+                margin: 8px;
+            }
+        }
     }
     table {
         font-family: arial, sans-serif;
@@ -26,6 +37,10 @@
 
     .pagination {
         display: inline-block;
+        border: 1px solid #dddddd;
+        border-collapse: collapse;
+        margin: 16px 0px;
+        text-align: center;
         a {
             color: black;
             float: left;

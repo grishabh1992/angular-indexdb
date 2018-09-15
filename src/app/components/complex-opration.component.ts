@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IndexDbServiceService } from '../index-db.service.service';
 import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { range } from "rxjs";
+
+
 @Component({
     selector: 'app-complex-opration',
     templateUrl: './complex-opration.component.html',
@@ -11,8 +15,19 @@ export class ComplexOperationComponent implements OnInit {
     dbInstance: any;
     users = {
         list: [],
-        allList: [],
-        pageObject: { currentPage: 1, pageSize: 5, totalPages: 0 }
+        filters: {
+            operator: '',
+            field: '',
+            firstField: '',
+            secondField: ''
+        },
+        operators: [
+            { id: '<', value: 'Less Than', type: 'single' }, { id: '<=', value: 'Less Than And Equal', type: 'single' },
+            { id: '>', value: 'Greater Than', type: 'single' }, { id: '>=', value: 'Greater Than And Equal', type: 'single' },
+            { id: 'bound', value: 'Between', type: 'double' }, { id: 'boundequal', value: 'Between Equal', type: 'double' },
+            { id: 'only', value: 'only', type: 'single' }
+        ],
+        pageObject: { currentPage: 1, pages: [], pageSize: 5, totalPages: 0 }
     }
     constructor(
         private indexDbServiceService: IndexDbServiceService,
@@ -46,7 +61,12 @@ export class ComplexOperationComponent implements OnInit {
                         },
                         {
                             name: 'age',
-                            keyPath: 'email',
+                            keyPath: 'age',
+                            options: { unique: false }
+                        },
+                        {
+                            name: 'balence',
+                            keyPath: 'balence',
                             options: { unique: false }
                         }
                     ]
@@ -56,28 +76,46 @@ export class ComplexOperationComponent implements OnInit {
         this.indexDbServiceService.connect(dbConf, (db) => {
             this.dbInstance = db;
             this.populateDB();
-            this.getList();
         });
     }
 
     getList() {
-        this.indexDbServiceService.getAllRecords(this.dbInstance, 'usersList', 1, (result, error) => {
-            this.users.allList = result;
-            this.users.pageObject.totalPages = Math.floor(result / this.users.pageObject.pageSize);
+        this.users.pageObject.pages = [];
+        let listConfObject = {
+            pageObject: {
+                pageSize: this.users.pageObject.pageSize,
+                currentPage: this.users.pageObject.currentPage
+            },
+            filters: JSON.parse(JSON.stringify(this.users.filters))
+        };
+        this.indexDbServiceService.getAllRecords(this.dbInstance, 'usersList', listConfObject, (result, error) => {
+            console.log(result);
+            this.users.pageObject.totalPages = Math.floor(result.count / this.users.pageObject.pageSize);
+            for (let index = 0; index <= this.users.pageObject.totalPages; index++) {
+                this.users.pageObject.pages.push(index + 1);
+            }
+            this.users.list = result.data;
         });
     }
 
-    showAPageRecord() {
-
+    filterUser() {
+        this.getList();
     }
+
+    changePage(page) {
+        this.users.pageObject.currentPage = page;
+        this.getList();
+    }
+
     populateDB() {
         this.http.get('./assets/users.json').pipe(
             map((res) => res.json())
         ).subscribe((success: any) => {
-            this.users.allList = success;
             success.forEach(element => {
-                this.indexDbServiceService.createRecord(this.dbInstance, 'usersList', element, function () { });
+                this.indexDbServiceService.createRecord(this.dbInstance, 'usersList', element, () => {
+                });
             });
+            this.getList();
         });
     }
 }

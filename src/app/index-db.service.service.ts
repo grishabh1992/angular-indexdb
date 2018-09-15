@@ -101,28 +101,88 @@ export class IndexDbServiceService {
     transaction.onerror = function (event) {
       callback(null, event);
     };
-    // objectStoreRequest.onsuccess = function (event) {
-    //   console.log(objectStoreRequest.result, 'Request successful.', event.target.result);
-    // };
-    // objectStoreRequest.onerror = function (event) {
-    //   console.log(event, 'Request Error.');
-    // };
   }
 
-  getAllRecords = function (db, objectStoreName, key, callback) {
-    let transaction = db.transaction(objectStoreName, "readwrite");
+  getAllRecords = function (db, objectStoreName, confObject, callback) {
+    let transaction = db.transaction(objectStoreName, "readonly");
     let objectStoreInstance = transaction.objectStore(objectStoreName);
-    let list = [];
-    objectStoreInstance.openCursor().onsuccess = function (event) {
+    let listObject = { count: 0, data: [] };
+    let range = this.getRange(confObject.filters) || {};
+    let queryOver;
+    if (confObject.filters.operator && confObject.filters.operator.id && confObject.filters.field) {
+      queryOver = objectStoreInstance.index(confObject.filters.field)
+      queryOver = queryOver.openCursor(range);
+      objectStoreInstance.index(confObject.filters.field).count().onsuccess = function (e) {
+        listObject.count = e.target.result;
+      }
+    } else {
+      queryOver = objectStoreInstance.openCursor();
+      objectStoreInstance.count().onsuccess = function (e) {
+        listObject.count = e.target.result;
+      }
+    }
+
+    let index = 0;
+    queryOver.onsuccess = function (event) {
       var cursor = event.target.result;
       if (cursor) {
-        list.push(cursor.value)
-        cursor.continue();
+        if (confObject && confObject.pageObject && confObject.pageObject.pageSize) {
+          let lIndex = confObject.pageObject.pageSize * (confObject.pageObject.currentPage - 1);
+          let uIndex = (confObject.pageObject.pageSize * (confObject.pageObject.currentPage)) - 1;
+          if ((index > uIndex)) {
+            transaction.abort();
+            callback(listObject);
+          } else {
+            if ((index >= lIndex)) {
+              listObject.data.push(cursor.value)
+            }
+            index++;
+            cursor.continue();
+          }
+        } else {
+          listObject.data.push(cursor.value);
+          cursor.continue();
+        }
       }
     };
     transaction.oncomplete = function (event) {
-      callback(list);
+      callback(listObject);
     };
+  }
+
+  getRange(filter) {
+    let result;
+    console.log(filter, filter.operator.id)
+    if (Number(filter.firstField) != NaN) {
+      filter.firstField = Number(filter.firstField);
+    }
+    if (Number(filter.secondField) != NaN) {
+      filter.secondField = Number(filter.secondField);
+    }
+    switch (filter.operator.id) {
+      case '<':
+        result = IDBKeyRange.upperBound(filter.firstField, true);
+        break;
+      case '<=':
+        result = IDBKeyRange.upperBound(filter.firstField, false);
+        break;
+      case '>=':
+        result = IDBKeyRange.lowerBound(filter.firstField, false);
+        break;
+      case '>':
+        result = IDBKeyRange.lowerBound(filter.firstField, true);
+        break;
+      case 'bound':
+        result = IDBKeyRange.bound(filter.firstField, filter.secondField, true, true);
+        break;
+      case 'boundequal':
+        result = IDBKeyRange.bound(filter.firstField, filter.secondField, false, false);
+        break;
+      case 'only':
+        result = IDBKeyRange.only(filter.firstField);
+        break;
+    }
+    return result;
   }
 
 }
