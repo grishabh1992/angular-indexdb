@@ -107,9 +107,12 @@ export class IndexDbServiceService {
     let transaction = db.transaction(objectStoreName, "readonly");
     let objectStoreInstance = transaction.objectStore(objectStoreName);
     let listObject = { count: 0, data: [] };
-    let range = this.getRange(confObject.filters) || {};
+    let range;
+    if(confObject.filters){
+        range = this.getRange(confObject.filters) || {};
+    }
     let queryOver;
-    if (confObject.filters.operator && confObject.filters.operator.id && confObject.filters.field) {
+    if (confObject && confObject.filters && confObject.filters.operator && confObject.filters.operator.id && confObject.filters.field) {
       queryOver = objectStoreInstance.index(confObject.filters.field)
       queryOver = queryOver.openCursor(range);
       objectStoreInstance.index(confObject.filters.field).count().onsuccess = function (e) {
